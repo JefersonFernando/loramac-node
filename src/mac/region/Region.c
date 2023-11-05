@@ -129,6 +129,55 @@
 #define AU915_RX_BEACON_SETUP( )
 #endif
 
+#ifdef REGION_LA915
+#include "RegionLA915.h"
+#define LA915_CASE                                 case LORAMAC_REGION_LA915:
+#define LA915_IS_ACTIVE( )                         LA915_CASE { return true; }
+#define LA915_GET_PHY_PARAM( )                     LA915_CASE { return RegionLA915GetPhyParam( getPhy ); }
+#define LA915_SET_BAND_TX_DONE( )                  LA915_CASE { RegionLA915SetBandTxDone( txDone ); break; }
+#define LA915_INIT_DEFAULTS( )                     LA915_CASE { RegionLA915InitDefaults( params ); break; }
+#define LA915_VERIFY( )                            LA915_CASE { return RegionLA915Verify( verify, phyAttribute ); }
+#define LA915_APPLY_CF_LIST( )                     LA915_CASE { RegionLA915ApplyCFList( applyCFList ); break; }
+#define LA915_CHAN_MASK_SET( )                     LA915_CASE { return RegionLA915ChanMaskSet( chanMaskSet ); }
+#define LA915_COMPUTE_RX_WINDOW_PARAMETERS( )      LA915_CASE { RegionLA915ComputeRxWindowParameters( datarate, minRxSymbols, rxError, rxConfigParams ); break; }
+#define LA915_RX_CONFIG( )                         LA915_CASE { return RegionLA915RxConfig( rxConfig, datarate ); }
+#define LA915_TX_CONFIG( )                         LA915_CASE { return RegionLA915TxConfig( txConfig, txPower, txTimeOnAir ); }
+#define LA915_LINK_ADR_REQ( )                      LA915_CASE { return RegionLA915LinkAdrReq( linkAdrReq, drOut, txPowOut, nbRepOut, nbBytesParsed ); }
+#define LA915_RX_PARAM_SETUP_REQ( )                LA915_CASE { return RegionLA915RxParamSetupReq( rxParamSetupReq ); }
+#define LA915_NEW_CHANNEL_REQ( )                   LA915_CASE { return RegionLA915NewChannelReq( newChannelReq ); }
+#define LA915_TX_PARAM_SETUP_REQ( )                LA915_CASE { return RegionLA915TxParamSetupReq( txParamSetupReq ); }
+#define LA915_DL_CHANNEL_REQ( )                    LA915_CASE { return RegionLA915DlChannelReq( dlChannelReq ); }
+#define LA915_ALTERNATE_DR( )                      LA915_CASE { return RegionLA915AlternateDr( currentDr, type ); }
+#define LA915_NEXT_CHANNEL( )                      LA915_CASE { return RegionLA915NextChannel( nextChanParams, channel, time, aggregatedTimeOff ); }
+#define LA915_CHANNEL_ADD( )                       LA915_CASE { return RegionLA915ChannelAdd( channelAdd ); }
+#define LA915_CHANNEL_REMOVE( )                    LA915_CASE { return RegionLA915ChannelsRemove( channelRemove ); }
+#define LA915_APPLY_DR_OFFSET( )                   LA915_CASE { return RegionLA915ApplyDrOffset( downlinkDwellTime, dr, drOffset ); }
+#define LA915_RX_BEACON_SETUP( )                   LA915_CASE { RegionLA915RxBeaconSetup( rxBeaconSetup, outDr ); break; }
+#else
+#define LA915_IS_ACTIVE( )
+#define LA915_GET_PHY_PARAM( )
+#define LA915_SET_BAND_TX_DONE( )
+#define LA915_INIT_DEFAULTS( )
+#define LA915_GET_NVM_CTX( )
+#define LA915_VERIFY( )
+#define LA915_APPLY_CF_LIST( )
+#define LA915_CHAN_MASK_SET( )
+#define LA915_COMPUTE_RX_WINDOW_PARAMETERS( )
+#define LA915_RX_CONFIG( )
+#define LA915_TX_CONFIG( )
+#define LA915_LINK_ADR_REQ( )
+#define LA915_RX_PARAM_SETUP_REQ( )
+#define LA915_NEW_CHANNEL_REQ( )
+#define LA915_TX_PARAM_SETUP_REQ( )
+#define LA915_DL_CHANNEL_REQ( )
+#define LA915_ALTERNATE_DR( )
+#define LA915_NEXT_CHANNEL( )
+#define LA915_CHANNEL_ADD( )
+#define LA915_CHANNEL_REMOVE( )
+#define LA915_APPLY_DR_OFFSET( )
+#define LA915_RX_BEACON_SETUP( )
+#endif
+
 #ifdef REGION_CN470
 #include "RegionCN470.h"
 #define CN470_CASE                                 case LORAMAC_REGION_CN470:
@@ -527,6 +576,7 @@ bool RegionIsActive( LoRaMacRegion_t region )
     {
         AS923_IS_ACTIVE( );
         AU915_IS_ACTIVE( );
+        LA915_IS_ACTIVE( );
         CN470_IS_ACTIVE( );
         CN779_IS_ACTIVE( );
         EU433_IS_ACTIVE( );
@@ -549,6 +599,7 @@ PhyParam_t RegionGetPhyParam( LoRaMacRegion_t region, GetPhyParams_t* getPhy )
     {
         AS923_GET_PHY_PARAM( );
         AU915_GET_PHY_PARAM( );
+        LA915_GET_PHY_PARAM( );
         CN470_GET_PHY_PARAM( );
         CN779_GET_PHY_PARAM( );
         EU433_GET_PHY_PARAM( );
@@ -570,6 +621,7 @@ void RegionSetBandTxDone( LoRaMacRegion_t region, SetBandTxDoneParams_t* txDone 
     {
         AS923_SET_BAND_TX_DONE( );
         AU915_SET_BAND_TX_DONE( );
+        LA915_SET_BAND_TX_DONE( );
         CN470_SET_BAND_TX_DONE( );
         CN779_SET_BAND_TX_DONE( );
         EU433_SET_BAND_TX_DONE( );
@@ -591,6 +643,7 @@ void RegionInitDefaults( LoRaMacRegion_t region, InitDefaultsParams_t* params )
     {
         AS923_INIT_DEFAULTS( );
         AU915_INIT_DEFAULTS( );
+        LA915_INIT_DEFAULTS( );
         CN470_INIT_DEFAULTS( );
         CN779_INIT_DEFAULTS( );
         EU433_INIT_DEFAULTS( );
@@ -612,6 +665,7 @@ bool RegionVerify( LoRaMacRegion_t region, VerifyParams_t* verify, PhyAttribute_
     {
         AS923_VERIFY( );
         AU915_VERIFY( );
+        LA915_VERIFY( );
         CN470_VERIFY( );
         CN779_VERIFY( );
         EU433_VERIFY( );
@@ -633,6 +687,7 @@ void RegionApplyCFList( LoRaMacRegion_t region, ApplyCFListParams_t* applyCFList
     {
         AS923_APPLY_CF_LIST( );
         AU915_APPLY_CF_LIST( );
+        LA915_APPLY_CF_LIST( );
         CN470_APPLY_CF_LIST( );
         CN779_APPLY_CF_LIST( );
         EU433_APPLY_CF_LIST( );
@@ -654,6 +709,7 @@ bool RegionChanMaskSet( LoRaMacRegion_t region, ChanMaskSetParams_t* chanMaskSet
     {
         AS923_CHAN_MASK_SET( );
         AU915_CHAN_MASK_SET( );
+        LA915_CHAN_MASK_SET( );
         CN470_CHAN_MASK_SET( );
         CN779_CHAN_MASK_SET( );
         EU433_CHAN_MASK_SET( );
@@ -675,6 +731,7 @@ void RegionComputeRxWindowParameters( LoRaMacRegion_t region, int8_t datarate, u
     {
         AS923_COMPUTE_RX_WINDOW_PARAMETERS( );
         AU915_COMPUTE_RX_WINDOW_PARAMETERS( );
+        LA915_COMPUTE_RX_WINDOW_PARAMETERS( );
         CN470_COMPUTE_RX_WINDOW_PARAMETERS( );
         CN779_COMPUTE_RX_WINDOW_PARAMETERS( );
         EU433_COMPUTE_RX_WINDOW_PARAMETERS( );
@@ -696,6 +753,7 @@ bool RegionRxConfig( LoRaMacRegion_t region, RxConfigParams_t* rxConfig, int8_t*
     {
         AS923_RX_CONFIG( );
         AU915_RX_CONFIG( );
+        LA915_RX_CONFIG( );
         CN470_RX_CONFIG( );
         CN779_RX_CONFIG( );
         EU433_RX_CONFIG( );
@@ -717,6 +775,7 @@ bool RegionTxConfig( LoRaMacRegion_t region, TxConfigParams_t* txConfig, int8_t*
     {
         AS923_TX_CONFIG( );
         AU915_TX_CONFIG( );
+        LA915_TX_CONFIG( );
         CN470_TX_CONFIG( );
         CN779_TX_CONFIG( );
         EU433_TX_CONFIG( );
@@ -738,6 +797,7 @@ uint8_t RegionLinkAdrReq( LoRaMacRegion_t region, LinkAdrReqParams_t* linkAdrReq
     {
         AS923_LINK_ADR_REQ( );
         AU915_LINK_ADR_REQ( );
+        LA915_LINK_ADR_REQ( );
         CN470_LINK_ADR_REQ( );
         CN779_LINK_ADR_REQ( );
         EU433_LINK_ADR_REQ( );
@@ -759,6 +819,7 @@ uint8_t RegionRxParamSetupReq( LoRaMacRegion_t region, RxParamSetupReqParams_t* 
     {
         AS923_RX_PARAM_SETUP_REQ( );
         AU915_RX_PARAM_SETUP_REQ( );
+        LA915_RX_PARAM_SETUP_REQ( );
         CN470_RX_PARAM_SETUP_REQ( );
         CN779_RX_PARAM_SETUP_REQ( );
         EU433_RX_PARAM_SETUP_REQ( );
@@ -780,6 +841,7 @@ int8_t RegionNewChannelReq( LoRaMacRegion_t region, NewChannelReqParams_t* newCh
     {
         AS923_NEW_CHANNEL_REQ( );
         AU915_NEW_CHANNEL_REQ( );
+        LA915_NEW_CHANNEL_REQ( );
         CN470_NEW_CHANNEL_REQ( );
         CN779_NEW_CHANNEL_REQ( );
         EU433_NEW_CHANNEL_REQ( );
@@ -801,6 +863,7 @@ int8_t RegionTxParamSetupReq( LoRaMacRegion_t region, TxParamSetupReqParams_t* t
     {
         AS923_TX_PARAM_SETUP_REQ( );
         AU915_TX_PARAM_SETUP_REQ( );
+        LA915_TX_PARAM_SETUP_REQ( );
         CN470_TX_PARAM_SETUP_REQ( );
         CN779_TX_PARAM_SETUP_REQ( );
         EU433_TX_PARAM_SETUP_REQ( );
@@ -822,6 +885,7 @@ int8_t RegionDlChannelReq( LoRaMacRegion_t region, DlChannelReqParams_t* dlChann
     {
         AS923_DL_CHANNEL_REQ( );
         AU915_DL_CHANNEL_REQ( );
+        LA915_DL_CHANNEL_REQ( );
         CN470_DL_CHANNEL_REQ( );
         CN779_DL_CHANNEL_REQ( );
         EU433_DL_CHANNEL_REQ( );
@@ -843,6 +907,7 @@ int8_t RegionAlternateDr( LoRaMacRegion_t region, int8_t currentDr, AlternateDrT
     {
         AS923_ALTERNATE_DR( );
         AU915_ALTERNATE_DR( );
+        LA915_ALTERNATE_DR( );
         CN470_ALTERNATE_DR( );
         CN779_ALTERNATE_DR( );
         EU433_ALTERNATE_DR( );
@@ -864,6 +929,7 @@ LoRaMacStatus_t RegionNextChannel( LoRaMacRegion_t region, NextChanParams_t* nex
     {
         AS923_NEXT_CHANNEL( );
         AU915_NEXT_CHANNEL( );
+        LA915_NEXT_CHANNEL( );
         CN470_NEXT_CHANNEL( );
         CN779_NEXT_CHANNEL( );
         EU433_NEXT_CHANNEL( );
@@ -885,6 +951,7 @@ LoRaMacStatus_t RegionChannelAdd( LoRaMacRegion_t region, ChannelAddParams_t* ch
     {
         AS923_CHANNEL_ADD( );
         AU915_CHANNEL_ADD( );
+        LA915_CHANNEL_ADD( );
         CN470_CHANNEL_ADD( );
         CN779_CHANNEL_ADD( );
         EU433_CHANNEL_ADD( );
@@ -906,6 +973,7 @@ bool RegionChannelsRemove( LoRaMacRegion_t region, ChannelRemoveParams_t* channe
     {
         AS923_CHANNEL_REMOVE( );
         AU915_CHANNEL_REMOVE( );
+        LA915_CHANNEL_REMOVE( );
         CN470_CHANNEL_REMOVE( );
         CN779_CHANNEL_REMOVE( );
         EU433_CHANNEL_REMOVE( );
@@ -927,6 +995,7 @@ uint8_t RegionApplyDrOffset( LoRaMacRegion_t region, uint8_t downlinkDwellTime, 
     {
         AS923_APPLY_DR_OFFSET( );
         AU915_APPLY_DR_OFFSET( );
+        LA915_APPLY_DR_OFFSET( );
         CN470_APPLY_DR_OFFSET( );
         CN779_APPLY_DR_OFFSET( );
         EU433_APPLY_DR_OFFSET( );
@@ -948,6 +1017,7 @@ void RegionRxBeaconSetup( LoRaMacRegion_t region, RxBeaconSetup_t* rxBeaconSetup
     {
         AS923_RX_BEACON_SETUP( );
         AU915_RX_BEACON_SETUP( );
+        LA915_RX_BEACON_SETUP( );
         CN470_RX_BEACON_SETUP( );
         CN779_RX_BEACON_SETUP( );
         EU433_RX_BEACON_SETUP( );
